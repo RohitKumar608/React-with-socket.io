@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { socketConnect } from 'socket.io-react';
+ import './App.css';
+class App extends React.Component {
+  state={
+    message:'',
+    messageList:''
+  }
+   sendMessage=()=> {
+    this.props.socket.emit('message', this.state.message);
+     this.props.socket.on('sendMessage', msg => this.setState({messageList:msg}));
+  }
+  onMessageChangeHandler=(event)=>{
+    this.setState({message:event.target.value});
+  }
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+ render(){
+       return (
+       <div className="App">
+          <header className="App-header">
+          <input type="text" onChange={this.onMessageChangeHandler} />
+            <button onClick={this.sendMessage}>
+              Send!
+            </button>
+            <h5>{this.state.messageList.hello}</h5>
+          </header>
+        </div>
+      );
+  }
 }
-
-export default App;
+ 
+export default socketConnect(App);
